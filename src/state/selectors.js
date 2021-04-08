@@ -1,6 +1,8 @@
 import { selector } from 'recoil';
 import { order } from './atoms';
+import { ORDER_NAMESPACE } from './constants';
 
+// Can move into another file
 const priceList = [
   { name: 'cappucino', price: 5 },
   { name: 'latte', price: 7 },
@@ -8,11 +10,11 @@ const priceList = [
   { name: 'coffee', price: 4 },
   { name: 'cheesecake', price: 4 },
   { name: 'garlic bread', price: 5 },
-]
+];
 
-
+// Business logic handled via getter/setter selectors
 export const orderInfo = selector({
-  key: '@order/totalPrice',
+  key: `${ORDER_NAMESPACE}/totalPrice`,
   get: ({ get }) => {
     const listOfOrders = get(order);
 
@@ -26,18 +28,16 @@ export const orderInfo = selector({
 });
 
 export const addFood = selector({
-  key: '@order/addFood',
+  key: `${ORDER_NAMESPACE}/addFood`,
   set: ({ set, get }, newFood) => {
-    console.log('add food setter', get(order))
-    console.log('order', order)
+    // Writable selectors can accumulate a bunch of sets to update state
     set(order, [...get(order), newFood]);
   }
 });
 
 export const removeFood = selector({
-  key: '@order/removeFood',
+  key: `${ORDER_NAMESPACE}/removeFood`,
   set: ({ set, get }, foodToRemove) => {
-    console.log('remove food setter', foodToRemove)
     const currentOrder = get(order);
     const foodToRemoveIndex = currentOrder.findIndex((val => val === foodToRemove));
     set(order, [...currentOrder.slice(0, foodToRemoveIndex), ...currentOrder.slice(foodToRemoveIndex + 1)]);
